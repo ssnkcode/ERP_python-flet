@@ -7,8 +7,7 @@ import flet as ft
 from BaseDatos import db
 import hashlib
 from datetime import datetime
-import threading
-import asyncio
+from ConfiguracionHardware import HardwareManager, SecurityManager, BackupManager, LicenseManager
 
 # ==================== COLORES GLOBALES ====================
 COLORS = {
@@ -898,6 +897,11 @@ class ConfigPage(BasePageWithMenu):
     
     def __init__(self, app):
         super().__init__(app)
+        self.hardware_manager = HardwareManager(self.page)
+        self.backup_manager = BackupManager(page=self.page)
+        self.backup_manager = BackupManager()
+        self.license_manager = LicenseManager()
+        self.current_tab = 0
         self.build()
     
     def build(self):
@@ -921,17 +925,56 @@ class ConfigPage(BasePageWithMenu):
         self.page.update()
     
     def main_content(self):
+        # Crear tabs de configuración
+        tab_buttons = ft.Row(
+            [
+                ft.ElevatedButton(
+                    "Usuarios",
+                    on_click=lambda e: self.switch_tab(0),
+                    bgcolor=COLORS['accent'] if self.current_tab == 0 else COLORS['text_secondary'],
+                    color=ft.Colors.WHITE
+                ),
+                ft.ElevatedButton(
+                    "Hardware",
+                    on_click=lambda e: self.switch_tab(1),
+                    bgcolor=COLORS['accent'] if self.current_tab == 1 else COLORS['text_secondary'],
+                    color=ft.Colors.WHITE
+                ),
+                ft.ElevatedButton(
+                    "Backups",
+                    on_click=lambda e: self.switch_tab(2),
+                    bgcolor=COLORS['accent'] if self.current_tab == 2 else COLORS['text_secondary'],
+                    color=ft.Colors.WHITE
+                ),
+                ft.ElevatedButton(
+                    "Licencia",
+                    on_click=lambda e: self.switch_tab(3),
+                    bgcolor=COLORS['accent'] if self.current_tab == 3 else COLORS['text_secondary'],
+                    color=ft.Colors.WHITE
+                )
+            ],
+            spacing=10
+        )
+        
+        self.tab_users = ft.Container(content=self.users_tab(), visible=True)
+        self.tab_hardware = ft.Container(content=self.hardware_manager.hardware_config_page(), visible=False)
+        self.tab_backups = ft.Container(content=self.backup_manager.backup_config_page(), visible=False)
+        self.tab_license = ft.Container(content=self.license_manager.license_page(), visible=False)
+        
+        self.tab_content = ft.Column(
+            [self.tab_users, self.tab_hardware, self.tab_backups, self.tab_license],
+            spacing=20,
+            expand=True
+        )
+        
         return ft.Container(
             content=ft.Column(
                 [
                     ft.Text("Configuración del Sistema", size=24, weight=ft.FontWeight.BOLD),
                     ft.Divider(),
-                    ft.Text("Usuarios del Sistema", size=18, weight=ft.FontWeight.BOLD),
-                    Card(
-                        self.users_table(),
-                        padding=10
-                    ),
-                    ft.ElevatedButton("+ Nuevo Usuario", bgcolor=COLORS['accent'], color=ft.Colors.WHITE, on_click=self.show_user_form)
+                    tab_buttons,
+                    ft.Divider(height=10),
+                    self.tab_content
                 ],
                 spacing=15,
                 expand=True,
@@ -940,6 +983,26 @@ class ConfigPage(BasePageWithMenu):
             padding=20,
             expand=True,
             bgcolor=COLORS['background']
+        )
+    
+    def switch_tab(self, index):
+        self.current_tab = index
+        self.tab_users.visible = (index == 0)
+        self.tab_hardware.visible = (index == 1)
+        self.tab_backups.visible = (index == 2)
+        self.tab_license.visible = (index == 3)
+        self.build()  # Recargar para actualizar colores de botones
+    
+    def users_tab(self):
+        return ft.Column(
+            [
+                ft.Text("Usuarios del Sistema", size=18, weight=ft.FontWeight.BOLD),
+                Card(self.users_table(), padding=10),
+                ft.ElevatedButton("+ Nuevo Usuario", bgcolor=COLORS['accent'], color=ft.Colors.WHITE, on_click=self.show_user_form)
+            ],
+            spacing=15,
+            expand=True,
+            scroll=ft.ScrollMode.AUTO
         )
     
     def users_table(self):

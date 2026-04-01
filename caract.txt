@@ -1,0 +1,54 @@
+📂 Estructura de Proyecto: ERP_Universal
+1. InstalacionConfiguracionInicial/
+ConfiguracionHardware.py (Lectores, impresoras térmicas y fiscales).
+
+SeguridadAccesos.py (Login y niveles de permisos).
+
+RespaldoDatos.py (Backups automáticos y sincronización nube).
+
+LicenciamientoPermanente.py (Validación de licencia única).
+
+2. CargaGestionInventario/
+ImportacionMasiva.py (Lógica para importar desde Excel).
+
+MultilistaPrecio.py (Gestión de las 4 listas por artículo).
+
+ActualizacionGlobal.py (Cambios masivos por rubro/marca).
+
+IdentificacionVisual.py (Manejo de fotos de productos).
+
+GeneradorEtiquetas.py (Creación de códigos de barra y QR).
+
+VentaFraccionada.py (Lógica para peso, litro y unidad).
+
+3. OperacionComercialVentasCompras/
+GestionVentas.py (Emisión de tickets, facturas y presupuestos).
+
+ModuloCompras.py (Ingreso de mercadería y actualización de costos).
+
+MediosPagoDiversos.py (Tarjetas, billeteras virtuales, efectivo).
+
+ControlGastos.py (Registro de gastos fijos/servicios).
+
+GestionVendedores.py (Comisiones y seguimiento).
+
+4. AdministracionCuentasProveedores/
+CuentasCorrientes.py (Deudas de clientes y pagos a proveedores).
+
+DocumentacionComercial.py (Notas de crédito y pedidos automáticos).
+
+EscalabilidadRed.py (Sincronización para terminales extra).
+
+5. AuditoriaReportes/
+AnalisisEstadistico.py (Los 80 tipos de reportes).
+
+CalculoRentabilidad.py (Ganancia real y estadísticas).
+
+ExportacionInformacion.py (Salida a Excel/PDF).
+
+🧠 El Núcleo (Raíz del Proyecto)
+BaseDatos.py (El motor SQLite: Crea las tablas y maneja las consultas).
+
+CerebroBackend.py (El orquestador: Conecta los módulos de las carpetas con la base de datos).
+
+MainFletApp.py (La interfaz gráfica: Aquí es donde Flet dibuja las ventanas y llama al CerebroBackend).
